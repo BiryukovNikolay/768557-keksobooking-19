@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Николай Бирюков](https://up.htmlacademy.ru/javascript/19/user/768557).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Щеколдин] (https://htmlacademy.ru/profile/id861059).
 
 ---
 

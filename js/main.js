@@ -13,6 +13,7 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var OFFSET = 20;
 var pinX = PIN_WIDTH / 2;
 var pinY = PIN_HEIGHT + PIN_POINTER_HEIGHT;
+
 var map = document.querySelector('.map');
 var pin = document.getElementById('pin').content.querySelector('.map__pin');
 var mapPins = document.querySelector('.map__pins');
@@ -92,6 +93,7 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var adFormAddress = document.querySelector('.ad-form__address');
 var roomNumber = document.getElementById('room_number');
 var guestNumber = document.getElementById('capacity');
+
 var setDisabled = function (arr) {
   for (var t = 0; t < arr.length; t++) {
     arr[t].setAttribute('disabled', 'disabled');
@@ -187,6 +189,7 @@ var fillOutCard = function () {
   var cardCopy = card.cloneNode(true);
   cardCopy.querySelector('.popup__title').textContent = pinObject[1].offer.title;
   cardCopy.querySelector('.popup__text--address').textContent = pinObject[1].offer.address;
+
   cardCopy.querySelector('.popup__text--price').textContent = pinObject[1].offer.price + ' ₽/ночь';
   if (pinObject[1].offer.type === 'flat') {
     cardCopy.querySelector('.popup__type').textContent = 'Квартира';

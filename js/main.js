@@ -140,21 +140,15 @@ roomNumber.addEventListener('change', function (evt) {
     for (var i = 0; i < roomOptions.length; i++) {
       var roomOption = roomOptions[i];
       var roomSelected = roomOption.selected;
-      console.log(roomSelected);
-      console.log(roomOption.value);
       if (roomSelected) {
         if (roomOption.value === '1') {
-          console.log('Запустился getDisabledGuest(1)');
-          getDisabledGuest(1);
+          getDisabledGuest('1');
         } else if (roomOption.value === '2') {
-          console.log('Запустился getDisabledGuest(2)');
-          getDisabledGuest(2);
+          getDisabledGuest('2');
         } else if (roomOption.value === '3') {
-          console.log(3);
-          getDisabledGuest('Запустился getDisabledGuest(3)');
+          getDisabledGuest('3');
         } else if (roomOption.value === '100') {
-          console.log('Запустился getDisabledGuest(0)');
-          getDisabledGuest(0);
+          getDisabledGuest('0');
         }
       }
     }
@@ -206,12 +200,9 @@ var fillOutCard = function () {
   }
   for (var j = 0; j < pinObject[1].offer.features.length; j++) {
     var featureClass = pinObject[1].offer.features[j];
-    console.log(pinObject[1].offer.features);
-    console.log(featureClass);
     for (var k = 0; k < featuresCard.length; k++) {
       var featureCard = featuresCard[k];
       if (featureCard.classList.contains('popup__feature--' + featureClass)) {
-        console.log('zapusk');
         featuresList.appendChild(featureCard);
       }
     }
@@ -220,7 +211,6 @@ var fillOutCard = function () {
   for (var l = 0; l < pinObject[1].offer.photos.length; l++) {
     var photoBlock = cardCopy.querySelector('.popup__photos');
     var images = cardCopy.querySelector('.popup__photo');
-    console.log(images.cloneNode(true));
     images.src = pinObject[1].offer.photos[l];
     var img = images.cloneNode(true);
     img.src = pinObject[1].offer.photos[l];

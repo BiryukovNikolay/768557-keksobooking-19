@@ -93,6 +93,8 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var adFormAddress = document.querySelector('.ad-form__address');
 var roomNumber = document.getElementById('room_number');
 var guestNumber = document.getElementById('capacity');
+var roomOptionSelected = roomNumber.options.selectedIndex;
+var guestOptionSelected = guestNumber.options.selectedIndex;
 
 var setDisabled = function (arr) {
   for (var t = 0; t < arr.length; t++) {
@@ -129,15 +131,11 @@ roomNumber.addEventListener('change', function (evt) {
   var getDisabledGuest = function (option) {
     for (var i = 0; i < guestOptions.length; i++) {
       guestOptions[i].removeAttribute('disabled', true);
-      if (guestOptions[i].value !== option) {
+      if (guestOptions[i].value > option) {
         guestOptions[i].setAttribute('disabled', true);
-        if (guestOptions[i].selected) {
-          target.setCustomValidity('Вариант размещение не более 1го гостя');
-        }
       }
     }
   };
-  getDisabledGuest(2);
   if (target) {
     for (var i = 0; i < roomOptions.length; i++) {
       var roomOption = roomOptions[i];
@@ -154,6 +152,9 @@ roomNumber.addEventListener('change', function (evt) {
         }
       }
     }
+  }
+  if (roomNumber.options[roomOptionSelected].value < guestNumber.options[guestOptionSelected].value) {
+    target.setCustomValidity('Неподходящее количество комнат');
   }
 });
 

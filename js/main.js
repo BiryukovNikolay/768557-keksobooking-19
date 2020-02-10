@@ -1,4 +1,7 @@
 'use strict';
+var PIN_HEIGHT = 65;
+var PIN_WIDTH = 65;
+var PIN_POINTER_HEIGHT = 22;
 var NUMBER_OF_ANNO = 8;
 var MAX_GUESTS = 200;
 var MAX_ROOMS = 20;
@@ -8,6 +11,9 @@ var CHECKIN_OUT_TIMES = ['12:00', '13:00', '14:00'];
 var ADVANTAGES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var OFFSET = 20;
+var pinX = PIN_WIDTH / 2;
+var pinY = PIN_HEIGHT + PIN_POINTER_HEIGHT;
+
 var map = document.querySelector('.map');
 var pin = document.getElementById('pin').content.querySelector('.map__pin');
 var mapPins = document.querySelector('.map__pins');
@@ -85,6 +91,11 @@ var mapFilter = document.querySelectorAll('.map__filter');
 var mapFeatures = document.querySelector('.map__features');
 var mapPinMain = document.querySelector('.map__pin--main');
 var adFormAddress = document.querySelector('.ad-form__address');
+var roomNumber = document.getElementById('room_number');
+var guestNumber = document.getElementById('capacity');
+var roomOptionSelected = roomNumber.options.selectedIndex;
+var guestOptionSelected = guestNumber.options.selectedIndex;
+
 var setDisabled = function (arr) {
   for (var t = 0; t < arr.length; t++) {
     arr[t].setAttribute('disabled', 'disabled');
@@ -103,13 +114,51 @@ var mapActivate = function () {
   removeDisabled(adFormElement);
   setPins();
 };
+// функция ввода адреса
 var setAdress = function () {
-  var styleLocation = mapPinMain.getAttribute('style');
-  var mainLocation = styleLocation;
-  adFormAddress.setAttribute('value', mainLocation);
+  var styleLocationY = mapPinMain.style.top;
+  var mainLocationY = parseInt(styleLocationY, 10);
+  var styleLocationX = mapPinMain.style.left;
+  var mainLocationX = parseInt(styleLocationX, 10);
+  adFormAddress.setAttribute('value', Math.round((mainLocationX + pinX)) + ', ' + Math.round((mainLocationY + pinY)));
 };
-setAdress();
 
+// Функция влидации полей комнаты и гости.
+var roomOptions = roomNumber.querySelectorAll('.add-form__option');
+var guestOptions = guestNumber.querySelectorAll('.add-form__option');
+roomNumber.addEventListener('change', function (evt) {
+  var target = evt.target;
+  var getDisabledGuest = function (option) {
+    for (var i = 0; i < guestOptions.length; i++) {
+      guestOptions[i].removeAttribute('disabled', true);
+      if (guestOptions[i].value > option) {
+        guestOptions[i].setAttribute('disabled', true);
+      }
+    }
+  };
+  if (target) {
+    for (var i = 0; i < roomOptions.length; i++) {
+      var roomOption = roomOptions[i];
+      var roomSelected = roomOption.selected;
+      if (roomSelected) {
+        if (roomOption.value === '1') {
+          getDisabledGuest('1');
+        } else if (roomOption.value === '2') {
+          getDisabledGuest('2');
+        } else if (roomOption.value === '3') {
+          getDisabledGuest('3');
+        } else if (roomOption.value === '100') {
+          getDisabledGuest('0');
+        }
+      }
+    }
+  }
+  if (roomNumber.options[roomOptionSelected].value < guestNumber.options[guestOptionSelected].value) {
+    target.setCustomValidity('Неподходящее количество комнат');
+  }
+});
+
+setAdress();
 setDisabled(mapFeatures);
 setDisabled(mapFilter);
 setDisabled(adFormHeader);
@@ -125,19 +174,18 @@ mapPinMain.addEventListener('mousedown', function (evt) {
 mapPinMain.addEventListener('keydown', function (evt) {
   if (evt.key === ENTER_KEY) {
     mapActivate();
+    setAdress();
   }
 });
 
-
-/*  карточка заполнение
-var filterContainer = document.querySelector('.map__filters-container');
 var card = document.getElementById('card').content.querySelector('.popup');
 
 var fillOutCard = function () {
   var cardCopy = card.cloneNode(true);
   cardCopy.querySelector('.popup__title').textContent = pinObject[1].offer.title;
   cardCopy.querySelector('.popup__text--address').textContent = pinObject[1].offer.address;
-  cardCopy.querySelector('.popup__text--price').textContent = pinObject[1].offer.price + '₽/ночь';
+
+  cardCopy.querySelector('.popup__text--price').textContent = pinObject[1].offer.price + ' ₽/ночь';
   if (pinObject[1].offer.type === 'flat') {
     cardCopy.querySelector('.popup__type').textContent = 'Квартира';
   } else if (pinObject[1].offer.type === 'bungalo') {
@@ -149,14 +197,17 @@ var fillOutCard = function () {
   }
   cardCopy.querySelector('.popup__text--capacity').textContent = pinObject[1].offer.rooms + ' комнаты для ' + pinObject[1].offer.guests + ' гостей';
   cardCopy.querySelector('.popup__text--time').textContent = 'Заезд после ' + pinObject[1].offer.checkin + ', выезд до ' + pinObject[1].offer.checkout;
+  var featuresList = cardCopy.querySelector('.popup__features');
+  var featuresCard = cardCopy.querySelectorAll('.popup__feature');
+  while (featuresList.firstChild) {
+    featuresList.removeChild(featuresList.firstChild);
+  }
   for (var j = 0; j < pinObject[1].offer.features.length; j++) {
-    var featuresList = cardCopy.querySelector('.popup__features');
-    var featuresCard = cardCopy.querySelectorAll('.popup__feature');
+    var featureClass = pinObject[1].offer.features[j];
     for (var k = 0; k < featuresCard.length; k++) {
       var featureCard = featuresCard[k];
-      if (featureCard.classList.contains('popup__feature--' + pinObject[1].offer.features[j])) {
-      } else {
-        featuresList.removeChild(featureCard);
+      if (featureCard.classList.contains('popup__feature--' + featureClass)) {
+        featuresList.appendChild(featureCard);
       }
     }
   }
@@ -164,6 +215,7 @@ var fillOutCard = function () {
   for (var l = 0; l < pinObject[1].offer.photos.length; l++) {
     var photoBlock = cardCopy.querySelector('.popup__photos');
     var images = cardCopy.querySelector('.popup__photo');
+    images.src = pinObject[1].offer.photos[l];
     var img = images.cloneNode(true);
     img.src = pinObject[1].offer.photos[l];
     photoBlock.appendChild(img);
@@ -177,4 +229,3 @@ var insertCard = function () {
 };
 
 insertCard();
- */

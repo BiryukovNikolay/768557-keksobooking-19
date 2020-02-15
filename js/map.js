@@ -59,4 +59,6 @@ var insertCard = function () {
 };
 
 insertCard();
-window.validatingRoomGuest();
+window.form.validatingRoomGuest();
+window.form.validatingTitle();
+window.form.validatingPrice();

@@ -22,13 +22,11 @@ var mapActivate = function () {
   window.util.removeDisabled(adFormElement);
   window.pin.setPins();
   var pins = document.querySelectorAll('.map__pin');
-  console.log(pins);
   mapPinMain.removeEventListener('mousedown', onMapPinMain);
   var onPinClick = function (pin, i) {
     pin.addEventListener('click', function () {
       window.fillOutCard(i);
       window.insertCard(i);
-      console.log('hello');
     });
   };
   for (var i = 0; i < pins.length; i++) {

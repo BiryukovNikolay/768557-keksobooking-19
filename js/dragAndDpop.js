@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var PIN_HEIGHT = 85;
+  var Y_TOP_STOP = 130;
+  var Y_BOTTOM_STOP = 680 - PIN_HEIGHT;
   var mapPinMain = document.querySelector('.map__pin--main');
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -22,7 +25,16 @@
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
-      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+
+      var finishY = (mapPinMain.offsetTop - shift.y);
+
+      if (finishY > Y_BOTTOM_STOP) {
+        mapPinMain.style.top = Y_BOTTOM_STOP + 'px';
+      } else if (finishY < Y_TOP_STOP) {
+        mapPinMain.style.top = Y_TOP_STOP + 'px';
+      } else {
+        mapPinMain.style.top = finishY + 'px';
+      }
       mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
     };
 
@@ -46,3 +58,12 @@
     window.startCoords = startCoords;
   });
 })();
+
+
+/*
+if (startCoords.y > 630) {
+        mapPinMain.style.top = 630 + 'px';
+      } else if (startCoords.y < 130) {
+        mapPinMain.style.top = 130 + 'px';
+      } else {
+        */

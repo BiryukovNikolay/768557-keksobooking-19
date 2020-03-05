@@ -14,5 +14,3 @@
     xhr.send();
   };
 })();
-
-console.log(window.load());

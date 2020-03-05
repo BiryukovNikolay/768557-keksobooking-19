@@ -44,6 +44,8 @@ var mapActivate = function () {
     onPinClick(pins[i], i);
   }
   mapPinMain.removeEventListener('click', onPinClick);
+  pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  console.log(pins);
 };
 
 window.form.setAdress();

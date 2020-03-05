@@ -38,3 +38,5 @@
     return announcements;
   })();
 })();
+
+console.log(window.getArrayOfAnnouncements);

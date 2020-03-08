@@ -2,9 +2,11 @@
 
 (function () {
   var PIN_HEIGHT = 85;
+  var PIN_WIDTH = 65;
   var Y_TOP_STOP = 130;
   var Y_BOTTOM_STOP = 680 - PIN_HEIGHT;
   var mapPinMain = document.querySelector('.map__pin--main');
+  var mainSize = document.querySelector('main').offsetWidth;
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     var startCoords = {
@@ -27,6 +29,14 @@
       };
 
       var finishY = (mapPinMain.offsetTop - shift.y);
+      var finishX = (mapPinMain.offsetLeft - shift.x);
+      if (finishX > mainSize - (PIN_WIDTH / 2)) {
+        mapPinMain.style.left = mainSize - (PIN_WIDTH / 2) + 'px';
+      } else if (finishX < 0) {
+        mapPinMain.style.left = 0 - PIN_WIDTH / 2 + 'px';
+      } else {
+        mapPinMain.style.left = finishX + 'px';
+      }
 
       if (finishY > Y_BOTTOM_STOP) {
         mapPinMain.style.top = Y_BOTTOM_STOP + 'px';
@@ -35,7 +45,6 @@
       } else {
         mapPinMain.style.top = finishY + 'px';
       }
-      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
     };
 
     var onMouseUp = function (upEvt) {

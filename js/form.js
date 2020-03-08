@@ -13,6 +13,9 @@ var timeIn = document.getElementById('timein');
 var timeOut = document.getElementById('timeout');
 var adFormAddress = document.querySelector('.ad-form__address');
 var mapPinMain = document.querySelector('.map__pin--main');
+var formSubmit = document.querySelector('.ad-form');
+var map = document.querySelector('.map');
+var main = document.querySelector('main');
 
 var setAdress = function () {
   adFormAddress.setAttribute('disabled', true);
@@ -126,11 +129,46 @@ var validatingCheckInOut = function () {
   });
 };
 
+var successMessage = document.getElementById('success').content.querySelector('.success');
+var errorMessage = document.getElementById('error').content.querySelector('.error');
+var onSuccess = function (disactive, location) {
+  location.appendChild(successMessage);
+  disactive();
+  successMessage.addEventListener('click', function (evt) {
+    location.removeChild(successMessage);
+    evt.preventDefault();
+  });
+  document.addEventListener('keydown', function (evt) {
+    window.util.isEscEvent('keydown', map.removeChild(successMessage));
+    evt.preventDefault();
+  });
+};
+
+var onError = function () {
+  main.appendChild(errorMessage);
+  errorMessage.addEventListener('click', function (evt) {
+    main.removeChild(errorMessage);
+    evt.preventDefault();
+  });
+  document.addEventListener('keydown', function (evt) {
+    window.util.isEscEvent('keydown', main.removeChild(errorMessage));
+    evt.preventDefault();
+  });
+};
+
+var submitForm = function (disactive, location) {
+  formSubmit.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.upload(new FormData(formSubmit), onSuccess(disactive, location), onError);
+  });
+};
+
 window.form = {
   validatingCheckInOut: validatingCheckInOut,
   validatingRoomGuest: validatingRoomGuest,
   validatingTitle: validatingTitle,
   validatingPrice: validatingPrice,
   validatingType: validatingType,
-  setAdress: setAdress
+  setAdress: setAdress,
+  submitForm: submitForm
 };

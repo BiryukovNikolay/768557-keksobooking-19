@@ -33,6 +33,10 @@ var isEscEvent = function (evt, action) {
   }
 };
 
+var setHidden = function (element) {
+  element.classList.add('hidden');
+};
+
 var setDisabled = function (arr) {
   for (var t = 0; t < arr.length; t++) {
     arr[t].setAttribute('disabled', 'disabled');
@@ -46,6 +50,7 @@ var removeDisabled = function (arr) {
 };
 
 window.util = {
+  setHidden: setHidden,
   getRandom: getRandom,
   getRandomIntInclusive: getRandomIntInclusive,
   getRandomArray: getRandomArray,

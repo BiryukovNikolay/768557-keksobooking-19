@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.fillOutCard = function (i) {
+  window.fillOutCard = function (i, cards) {
     var card = document.getElementById('card').content.querySelector('.popup');
     var cardCopy = card.cloneNode(true);
     var featuresList = cardCopy.querySelector('.popup__features');
@@ -58,16 +58,14 @@
     var fillAvatar = function (data) {
       cardCopy.querySelector('.popup__avatar').src = data[i].author.avatar;
     };
-    window.load(function (anno) {
-      fillTitle(anno);
-      fillAddress(anno);
-      fillType(anno);
-      fillGuests(anno);
-      fillcheckin(anno);
-      fillFeaturesList(anno);
-      fillDescription(anno);
-      fillAvatar(anno);
-    });
+    fillTitle(cards);
+    fillAddress(cards);
+    fillType(cards);
+    fillGuests(cards);
+    fillcheckin(cards);
+    fillFeaturesList(cards);
+    fillDescription(cards);
+    fillAvatar(cards);
     return cardCopy;
   };
 })();

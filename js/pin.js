@@ -1,13 +1,13 @@
 'use strict';
 (function () {
-
-  var map = document.querySelector('.map');
   var OFFSET = 20;
+  var map = document.querySelector('.map');
   var mapPins = document.querySelector('.map__pins');
   var pin = document.getElementById('pin').content.querySelector('.map__pin');
   var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   var pinCopy = pin.cloneNode(true);
   var mapCard = map.querySelector('.map__card');
+  var pinActive = document.querySelector('.map__pin--active');
   var removeOldPins = function () {
     pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
     for (var r = 0; r < pins.length; r++) {
@@ -17,9 +17,16 @@
     }
   };
   var removeCard = function () {
+    pinActive = document.querySelector('.map__pin--active');
     if (mapCard) {
       map.removeChild(mapCard);
+      pinActive.classList.remove('map__pin--active');
+      document.removeEventListener('keydown', onEscCard);
     }
+  };
+
+  var onEscCard = function (evt) {
+    window.util.isEscEvent(evt, removeCard);
   };
 
   var setPins = function (data) {
@@ -48,7 +55,7 @@
     var onPinClick = function (pinCop, j) {
       pinCop.addEventListener('click', function () {
         mapCard = map.querySelector('.map__card');
-        var pinActive = map.querySelector('.map__pin--active');
+        pinActive = map.querySelector('.map__pin--active');
         pinCop.classList.add('map__pin--active');
         if (mapCard) {
           removeCard();
@@ -59,16 +66,8 @@
         insertCard(j);
         mapCard = map.querySelector('.map__card');
         var cardClose = document.querySelector('.popup__close');
-        cardClose.addEventListener('click', function () {
-          map.removeChild(mapCard);
-          pinCop.classList.remove('map__pin--active');
-        });
-        document.addEventListener('keydown', function (evt) {
-          if (evt.keyCode === 27) {
-            map.removeChild(mapCard);
-            pinCop.classList.remove('map__pin--active');
-          }
-        });
+        cardClose.addEventListener('click', removeCard);
+        document.addEventListener('keydown', onEscCard);
       });
     };
     pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
@@ -83,3 +82,4 @@
     removeCard: removeCard
   };
 })();
+

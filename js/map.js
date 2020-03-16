@@ -26,10 +26,11 @@
   var mapActivate = function () {
     map.classList.remove('map--faded');
     window.util.removeDisabled(mapFeatures);
-    window.util.removeDisabled(mapFilter);
     window.util.removeDisabled(adFormHeader);
     window.util.removeDisabled(adFormElement);
     window.filter.samePins();
+    window.util.removeDisabled(mapFilter);
+    window.filter.filterReset();
     window.filter.updateFilter();
     mapPinMain.removeEventListener('mousedown', onMapPinMain);
   };

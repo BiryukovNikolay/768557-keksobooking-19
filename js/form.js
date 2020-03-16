@@ -166,34 +166,45 @@
     });
   };
 
+  var onSuccessMessage = function () {
+    map.removeChild(successMessage);
+    document.removeEventListener('keydown', onEscSuccessMessage);
+  };
+
+  var onEscSuccessMessage = function (evt) {
+    evt.preventDefault();
+    window.util.isEscEvent(evt, onSuccessMessage);
+  };
+
+  var onErrorMessage = function () {
+    map.removeChild(errorMessage);
+    document.removeEventListener('keydown', onEscErrorMessage);
+  };
+
+  var onEscErrorMessage = function (evt) {
+    evt.preventDefault();
+    window.util.isEscEvent(evt, onErrorMessage);
+  };
+
   var successMessage = document.getElementById('success').content.querySelector('.success');
   var errorMessage = document.getElementById('error').content.querySelector('.error');
+
   var onSuccess = function () {
     map.appendChild(successMessage);
     window.pin.removeCard();
     window.pin.removeOldPins();
     window.map.mapDisActivate();
+    mapPinMain.style.top = StarStyleLocationY;
+    mapPinMain.style.left = StartStyleLocationX;
     formSubmit.reset();
-    successMessage.addEventListener('click', function (evt) {
-      map.removeChild(successMessage);
-      evt.preventDefault();
-    });
-    document.addEventListener('keydown', function (evt) {
-      window.util.isEscEvent('keydown', map.removeChild(successMessage));
-      evt.preventDefault();
-    });
+    successMessage.addEventListener('click', onSuccessMessage);
+    document.addEventListener('keydown', onEscSuccessMessage);
   };
 
   var onError = function () {
     main.appendChild(errorMessage);
-    errorMessage.addEventListener('click', function (evt) {
-      main.removeChild(errorMessage);
-      evt.preventDefault();
-    });
-    document.addEventListener('keydown', function (evt) {
-      window.util.isEscEvent(evt, main.removeChild(errorMessage));
-      evt.preventDefault();
-    });
+    errorMessage.addEventListener('click', onErrorMessage);
+    document.addEventListener('keydown', onEscErrorMessage);
   };
 
   var submitForm = function () {

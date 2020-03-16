@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var mapFilters = document.querySelector('.map__filters');
   var housingType = document.getElementById('housing-type');
   var housingTypeSelected = housingType.options.selectedIndex;
   var housingTypeValue = housingType.options[housingTypeSelected].value;
@@ -16,7 +17,7 @@
   var housingGuestsSelected = housingGuests.options.selectedIndex;
   var housingGuestsValue = housingGuests.options[housingGuestsSelected].value;
 
-  // var housingFeatures = document.getElementById('housing-features');
+  var housingFeatures = document.querySelectorAll('.map__checkbox');
 
   var cards = [];
   var samePins = function () {
@@ -47,56 +48,85 @@
       return sameType;
     });
 
-
     var sameRooms = samePrice.filter(function (it) {
       if (housingRoomsValue !== 'any') {
-
-        return it.offer.rooms === housingRoomsValue;
+        return it.offer.rooms === Number(housingRoomsValue);
       }
       return samePrice;
     });
 
     var sameGuests = sameRooms.filter(function (it) {
-      if (housingGuestsValue === 'any') {
-        return sameRooms;
+      if (housingGuestsValue !== 'any') {
+        return it.offer.guests === Number(housingGuestsValue);
       }
-      return it.offer.guests === housingGuestsValue;
+      return sameRooms;
     });
 
-    var filteredCards = sameGuests;
+    var sameFeatures = function () {
+      var featuresCheck = function () {
+        var featuresChecked = [];
+        housingFeatures.forEach(function (that) {
+          if (that.checked) {
+            featuresChecked.push(that.value);
+          }
+        });
+        return featuresChecked;
+      };
+      var sameFeaturesArray = sameGuests;
+      var features = featuresCheck();
+      if (features[0]) {
+        for (var i = 0; i < features.length; i++) {
+          sameFeaturesArray = sameFeaturesArray.filter(function (it) {
+            return it.offer.features.includes(features[i]);
+          });
+        }
+        return sameFeaturesArray;
+      }
+      return sameGuests;
+    };
+    var filteredCards = sameFeatures();
     window.pin.setPins(filteredCards);
   };
 
   var updateType = function () {
-    housingType.addEventListener('change', function () {
+    housingType.addEventListener('change', window.debounce(function () {
       housingTypeSelected = housingType.options.selectedIndex;
       housingTypeValue = housingType.options[housingTypeSelected].value;
       updatePins();
-    });
+    }));
   };
 
   var updatePrice = function () {
-    housingPrice.addEventListener('change', function () {
+    housingPrice.addEventListener('change', window.debounce(function () {
       housingPriceSelected = housingPrice.options.selectedIndex;
       housingPriceValue = housingPrice.options[housingPriceSelected].value;
       updatePins();
-    });
+    }));
   };
 
   var updateRooms = function () {
-    housingRooms.addEventListener('change', function () {
+    housingRooms.addEventListener('change', window.debounce(function () {
       housingRoomsSelected = housingRooms.options.selectedIndex;
       housingRoomsValue = housingRooms.options[housingRoomsSelected].value;
       updatePins();
-    });
+    }));
   };
 
   var updateGuests = function () {
-    housingGuests.addEventListener('change', function () {
+    housingGuests.addEventListener('change', window.debounce(function () {
       housingGuestsSelected = housingGuests.options.selectedIndex;
       housingGuestsValue = housingGuests.options[housingGuestsSelected].value;
       updatePins();
-    });
+    }));
+  };
+
+  var updateFeatures = function () {
+
+    for (var i = 0; i < housingFeatures.length; i++) {
+      housingFeatures[i].addEventListener('change', window.debounce(function () {
+        updatePins();
+      }));
+    }
   };
 
   var updateFilter = function () {
@@ -104,9 +134,15 @@
     updatePrice();
     updateRooms();
     updateGuests();
+    updateFeatures();
+  };
+
+  var filterReset = function () {
+    mapFilters.reset();
   };
 
   window.filter = {
+    filterReset: filterReset,
     updateFilter: updateFilter,
     samePins: samePins
   };

@@ -45,7 +45,7 @@
       }
     };
     var fillDescription = function (data) {
-      cardCopy.querySelector('.popup__description').textContent = data[1].offer.description;
+      cardCopy.querySelector('.popup__description').textContent = data[i].offer.description;
       for (var l = 0; l < data[i].offer.photos.length; l++) {
         var photoBlock = cardCopy.querySelector('.popup__photos');
         var images = cardCopy.querySelector('.popup__photo');

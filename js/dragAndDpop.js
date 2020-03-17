@@ -67,12 +67,3 @@
     window.startCoords = startCoords;
   });
 })();
-
-
-/*
-if (startCoords.y > 630) {
-        mapPinMain.style.top = 630 + 'px';
-      } else if (startCoords.y < 130) {
-        mapPinMain.style.top = 130 + 'px';
-      } else {
-        */

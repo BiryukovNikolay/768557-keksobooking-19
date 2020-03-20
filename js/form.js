@@ -75,8 +75,6 @@
           }
         }
       }
-      console.log(roomNumberValue);
-      console.log(guestNumberValue);
       if (roomNumberValue < guestNumberValue) {
         roomNumber.setCustomValidity('Неподходящее количество комнат');
       } else {

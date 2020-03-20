@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.fillOutCard = function (i, cards) {
+  window.card = function (i, cards) {
     var card = document.getElementById('card').content.querySelector('.popup');
     var cardCopy = card.cloneNode(true);
     var featuresList = cardCopy.querySelector('.popup__features');
@@ -13,15 +13,16 @@
       cardCopy.querySelector('.popup__text--address').textContent = data[i].offer.address;
     };
     var fillType = function (data) {
+      var typeField = cardCopy.querySelector('.popup__type');
       cardCopy.querySelector('.popup__text--price').textContent = data[i].offer.price + ' ₽/ночь';
       if (data[i].offer.type === 'flat') {
-        cardCopy.querySelector('.popup__type').textContent = 'Квартира';
+        typeField.textContent = 'Квартира';
       } else if (data[i].offer.type === 'bungalo') {
-        cardCopy.querySelector('.popup__type').textContent = 'Бунгало';
+        typeField.textContent = 'Бунгало';
       } else if (data[i].offer.type === 'house') {
-        cardCopy.querySelector('.popup__type').textContent = 'Дом';
+        typeField.textContent = 'Дом';
       } else if (data[i].offer.type === 'palace') {
-        cardCopy.querySelector('.popup__type').textContent = 'Дворец';
+        typeField.textContent = 'Дворец';
       }
     };
     var fillGuests = function (data) {

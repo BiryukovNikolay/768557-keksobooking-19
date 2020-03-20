@@ -1,5 +1,9 @@
 'use strict';
 (function () {
+
+  var LOW_PRICE = 10000;
+  var HIGH_PRICE = 50000;
+  var URL_GET = 'https://js.dump.academy/keksobooking/data';
   var mapFilters = document.querySelector('.map__filters');
   var housingType = document.getElementById('housing-type');
   var housingTypeSelected = housingType.options.selectedIndex;
@@ -20,12 +24,14 @@
   var housingFeatures = document.querySelectorAll('.map__checkbox');
 
   var cards = [];
-  var samePins = function () {
+  var loadSamePins = function () {
     var onSuccess = function (data) {
       cards = data;
-      window.pin.setPins(cards);
+      window.pin.set(cards);
     };
-    window.load(onSuccess);
+    var onError = function () {
+    };
+    window.xhr(URL_GET, onSuccess, onError, 'GET');
   };
 
   var updatePins = function () {
@@ -39,11 +45,11 @@
 
     var samePrice = sameType.filter(function (it) {
       if (housingPriceValue === 'low') {
-        return it.offer.price < 10000;
+        return it.offer.price < LOW_PRICE;
       } else if (housingPriceValue === 'high') {
-        return it.offer.price > 50000;
+        return it.offer.price > HIGH_PRICE;
       } else if (housingPriceValue === 'middle') {
-        return (it.offer.price > 10000 && it.offer.price < 50000);
+        return (it.offer.price > LOW_PRICE && it.offer.price < HIGH_PRICE);
       }
       return sameType;
     });
@@ -85,7 +91,7 @@
       return sameGuests;
     };
     var filteredCards = sameFeatures();
-    window.pin.setPins(filteredCards);
+    window.pin.set(filteredCards);
   };
 
   var updateType = function () {
@@ -129,7 +135,7 @@
     }
   };
 
-  var updateFilter = function () {
+  var update = function () {
     updateType();
     updatePrice();
     updateRooms();
@@ -137,13 +143,13 @@
     updateFeatures();
   };
 
-  var filterReset = function () {
+  var reset = function () {
     mapFilters.reset();
   };
 
   window.filter = {
-    filterReset: filterReset,
-    updateFilter: updateFilter,
-    samePins: samePins
+    reset: reset,
+    update: update,
+    loadSamePins: loadSamePins
   };
 })();

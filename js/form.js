@@ -3,8 +3,13 @@
   var PIN_HEIGHT = 65;
   var PIN_WIDTH = 65;
   var PIN_POINTER_HEIGHT = 22;
-  var pinX = PIN_WIDTH / 2;
-  var pinY = PIN_HEIGHT + PIN_POINTER_HEIGHT;
+  var PIN_X = PIN_WIDTH / 2;
+  var PIN_Y = PIN_HEIGHT + PIN_POINTER_HEIGHT;
+  var MIN_PRICE_BUNGALO = 0;
+  var MIN_PRICE_FLAT = 1000;
+  var MIN_PRICE_HOUSE = 5000;
+  var MIN_PRICE_PALACE = 10000;
+  var URL_POST = 'https://js.dump.academy/keksobooking';
   var roomNumber = document.getElementById('room_number');
   var guestNumber = document.getElementById('capacity');
   var priceInput = document.getElementById('price');
@@ -19,9 +24,11 @@
   var formResetButton = document.querySelector('.ad-form__reset');
   var StarStyleLocationY = mapPinMain.style.top;
   var StartStyleLocationX = mapPinMain.style.left;
+  var successMessage = document.getElementById('success').content.querySelector('.success');
+  var errorMessage = document.getElementById('error').content.querySelector('.error');
 
 
-  var setAdress = function () {
+  var onMoveMainPin = function () {
     adFormAddress.setAttribute('readonly', true);
     var styleLocationY = StarStyleLocationY;
     var styleLocationX = StartStyleLocationX;
@@ -29,17 +36,17 @@
     var mainLocationY = parseInt(styleLocationY, 10);
     styleLocationX = mapPinMain.style.left;
     var mainLocationX = parseInt(styleLocationX, 10);
-    adFormAddress.setAttribute('value', Math.round((mainLocationX + pinX)) + ', ' + Math.round((mainLocationY + pinY)));
+    adFormAddress.setAttribute('value', Math.round((mainLocationX + PIN_X)) + ', ' + Math.round((mainLocationY + PIN_Y)));
   };
 
-  var formReset = function () {
+  var reset = function () {
     formResetButton.addEventListener('click', function () {
       mapPinMain.style.top = StarStyleLocationY;
       mapPinMain.style.left = StartStyleLocationX;
       formSubmit.reset();
-      window.pin.removeCard();
-      window.map.mapDisActivate();
-      window.pin.removeOldPins();
+      window.pin.onRemoveCard();
+      window.map.disactivate();
+      window.pin.removeOld();
     });
   };
 
@@ -55,6 +62,21 @@
       guestOptionSelected = guestNumber.options.selectedIndex;
       roomNumberValue = roomNumber.options[roomOptionSelected].value;
       guestNumberValue = guestNumber.options[guestOptionSelected].value;
+      for (var i = 0; i < guestOptions.length; i++) {
+        guestOptions[i].removeAttribute('disabled', true);
+        if (roomNumberValue !== '100') {
+          if (guestOptions[i].value > roomNumberValue) {
+            guestOptions[i].setAttribute('disabled', true);
+          }
+        } else {
+          guestOptions[i].setAttribute('disabled', true);
+          if (guestOptions[i].value === '50') {
+            guestOptions[i].removeAttribute('disabled', true);
+          }
+        }
+      }
+      console.log(roomNumberValue);
+      console.log(guestNumberValue);
       if (roomNumberValue < guestNumberValue) {
         roomNumber.setCustomValidity('Неподходящее количество комнат');
       } else {
@@ -64,27 +86,7 @@
     onValidateRoomsGuest();
 
     guestNumber.addEventListener('change', onValidateRoomsGuest);
-
-    roomNumber.addEventListener('change', function (evt) {
-      var target = evt.target;
-      roomOptionSelected = roomNumber.options.selectedIndex;
-      guestOptionSelected = guestNumber.options.selectedIndex;
-      roomNumberValue = roomNumber.options[roomOptionSelected].value;
-      guestNumberValue = guestNumber.options[guestOptionSelected].value;
-      if (target) {
-        for (var i = 0; i < guestOptions.length; i++) {
-          guestOptions[i].removeAttribute('disabled', true);
-          if (guestOptions[i].value > roomNumberValue) {
-            guestOptions[i].setAttribute('disabled', true);
-          }
-        }
-        if (roomNumberValue < guestNumberValue) {
-          target.setCustomValidity('Неподходящее количество комнат');
-        } else {
-          target.setCustomValidity('');
-        }
-      }
-    });
+    roomNumber.addEventListener('change', onValidateRoomsGuest);
   };
 
   var validatingTitle = function () {
@@ -119,11 +121,6 @@
   };
 
   var validatingType = function () {
-    var MIN_PRICE_BUNGALO = 0;
-    var MIN_PRICE_FLAT = 1000;
-    var MIN_PRICE_HOUSE = 5000;
-    var MIN_PRICE_PALACE = 10000;
-
     typeInput.addEventListener('change', function () {
       var typeInputSelected = typeInput.options.selectedIndex;
       var typeInputValue = typeInput.options[typeInputSelected].value;
@@ -177,7 +174,7 @@
   };
 
   var onErrorMessage = function () {
-    map.removeChild(errorMessage);
+    main.removeChild(errorMessage);
     document.removeEventListener('keydown', onEscErrorMessage);
   };
 
@@ -186,14 +183,11 @@
     window.util.isEscEvent(evt, onErrorMessage);
   };
 
-  var successMessage = document.getElementById('success').content.querySelector('.success');
-  var errorMessage = document.getElementById('error').content.querySelector('.error');
-
   var onSuccess = function () {
     map.appendChild(successMessage);
-    window.pin.removeCard();
-    window.pin.removeOldPins();
-    window.map.mapDisActivate();
+    window.pin.onRemoveCard();
+    window.pin.removeOld();
+    window.map.disactivate();
     mapPinMain.style.top = StarStyleLocationY;
     mapPinMain.style.left = StartStyleLocationX;
     formSubmit.reset();
@@ -207,13 +201,13 @@
     document.addEventListener('keydown', onEscErrorMessage);
   };
 
-  var submitForm = function () {
+  var submit = function () {
     formSubmit.addEventListener('submit', function (evt) {
       evt.preventDefault();
-      window.upload(new FormData(formSubmit), onSuccess, onError);
+      window.xhr(URL_POST, onSuccess, onError, 'POST', new FormData(formSubmit));
     });
   };
-  mapPinMain.addEventListener('mousemove', setAdress);
+  mapPinMain.addEventListener('mousemove', onMoveMainPin);
 
   window.form = {
     validatingCheckInOut: validatingCheckInOut,
@@ -221,8 +215,8 @@
     validatingTitle: validatingTitle,
     validatingPrice: validatingPrice,
     validatingType: validatingType,
-    setAdress: setAdress,
-    submitForm: submitForm,
-    formReset: formReset
+    onMoveMainPin: onMoveMainPin,
+    submit: submit,
+    reset: reset
   };
 })();

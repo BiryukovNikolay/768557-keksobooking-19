@@ -2,7 +2,7 @@
 
 (function () {
   window.card = function (i, cards) {
-    var card = document.getElementById('card').content.querySelector('.popup');
+    var card = document.querySelector('#card').content.querySelector('.popup');
     var cardCopy = card.cloneNode(true);
     var featuresList = cardCopy.querySelector('.popup__features');
     var featuresCard = cardCopy.querySelectorAll('.popup__feature');

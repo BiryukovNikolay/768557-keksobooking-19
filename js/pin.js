@@ -4,7 +4,7 @@
   var QUANTITY_OF_PINS = 5;
   var map = document.querySelector('.map');
   var mapPins = document.querySelector('.map__pins');
-  var pin = document.getElementById('pin').content.querySelector('.map__pin');
+  var pin = document.querySelector('#pin').content.querySelector('.map__pin');
   var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   var pinCopy = pin.cloneNode(true);
   var mapCard = map.querySelector('.map__card');
@@ -17,13 +17,17 @@
       }
     }
   };
-  var onRemoveCard = function () {
+  var removeCard = function () {
     pinActive = document.querySelector('.map__pin--active');
     if (mapCard) {
       map.removeChild(mapCard);
       pinActive.classList.remove('map__pin--active');
       document.removeEventListener('keydown', onEscCard);
     }
+  };
+
+  var onRemoveCard = function () {
+    removeCard();
   };
 
   var onEscCard = function (evt) {
@@ -37,7 +41,7 @@
     if (data.length > QUANTITY_OF_PINS) {
       pinsQuatity = QUANTITY_OF_PINS;
     }
-    onRemoveCard();
+    removeCard();
     removeOld();
 
     var createPins = function (pinInfo) {
@@ -66,7 +70,7 @@
         pinActive = map.querySelector('.map__pin--active');
         pinCop.classList.add('map__pin--active');
         if (mapCard) {
-          onRemoveCard();
+          removeCard();
         }
         if (pinActive) {
           pinActive.classList.remove('map__pin--active');
@@ -87,7 +91,7 @@
   window.pin = {
     set: set,
     removeOld: removeOld,
-    onRemoveCard: onRemoveCard
+    removeCard: removeCard
   };
 })();
 

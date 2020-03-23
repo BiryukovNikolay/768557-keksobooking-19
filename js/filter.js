@@ -5,19 +5,19 @@
   var HIGH_PRICE = 50000;
   var URL_GET = 'https://js.dump.academy/keksobooking/data';
   var mapFilters = document.querySelector('.map__filters');
-  var housingType = document.getElementById('housing-type');
+  var housingType = document.querySelector('#housing-type');
   var housingTypeSelected = housingType.options.selectedIndex;
   var housingTypeValue = housingType.options[housingTypeSelected].value;
 
-  var housingPrice = document.getElementById('housing-price');
+  var housingPrice = document.querySelector('#housing-price');
   var housingPriceSelected = housingPrice.options.selectedIndex;
   var housingPriceValue = housingPrice.options[housingPriceSelected].value;
 
-  var housingRooms = document.getElementById('housing-rooms');
+  var housingRooms = document.querySelector('#housing-rooms');
   var housingRoomsSelected = housingRooms.options.selectedIndex;
   var housingRoomsValue = housingRooms.options[housingRoomsSelected].value;
 
-  var housingGuests = document.getElementById('housing-guests');
+  var housingGuests = document.querySelector('#housing-guests');
   var housingGuestsSelected = housingGuests.options.selectedIndex;
   var housingGuestsValue = housingGuests.options[housingGuestsSelected].value;
 
@@ -68,7 +68,7 @@
       return sameRooms;
     });
 
-    var sameFeatures = function () {
+    var setSameFeatures = function () {
       var featuresCheck = function () {
         var featuresChecked = [];
         housingFeatures.forEach(function (that) {
@@ -90,7 +90,7 @@
       }
       return sameGuests;
     };
-    var filteredCards = sameFeatures();
+    var filteredCards = setSameFeatures();
     window.pin.set(filteredCards);
   };
 
@@ -127,7 +127,6 @@
   };
 
   var updateFeatures = function () {
-
     for (var i = 0; i < housingFeatures.length; i++) {
       housingFeatures[i].addEventListener('change', window.debounce(function () {
         updatePins();

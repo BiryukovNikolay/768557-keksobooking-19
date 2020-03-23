@@ -9,29 +9,31 @@
   var MIN_PRICE_FLAT = 1000;
   var MIN_PRICE_HOUSE = 5000;
   var MIN_PRICE_PALACE = 10000;
+  var MAX_ROOMS = '100';
+  var NOT_FOR_GUEST_VALUE = '50';
   var URL_POST = 'https://js.dump.academy/keksobooking';
-  var roomNumber = document.getElementById('room_number');
-  var guestNumber = document.getElementById('capacity');
-  var priceInput = document.getElementById('price');
-  var typeInput = document.getElementById('type');
-  var timeIn = document.getElementById('timein');
-  var timeOut = document.getElementById('timeout');
+  var roomNumber = document.querySelector('#room_number');
+  var guestNumber = document.querySelector('#capacity');
+  var priceInput = document.querySelector('#price');
+  var typeInput = document.querySelector('#type');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
   var adFormAddress = document.querySelector('.ad-form__address');
   var mapPinMain = document.querySelector('.map__pin--main');
   var formSubmit = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var main = document.querySelector('main');
   var formResetButton = document.querySelector('.ad-form__reset');
-  var StarStyleLocationY = mapPinMain.style.top;
-  var StartStyleLocationX = mapPinMain.style.left;
-  var successMessage = document.getElementById('success').content.querySelector('.success');
-  var errorMessage = document.getElementById('error').content.querySelector('.error');
+  var startStyleLocationY = mapPinMain.style.top;
+  var startStyleLocationX = mapPinMain.style.left;
+  var successMessage = document.querySelector('#success').content.querySelector('.success');
+  var errorMessage = document.querySelector('#error').content.querySelector('.error');
 
 
   var onMoveMainPin = function () {
     adFormAddress.setAttribute('readonly', true);
-    var styleLocationY = StarStyleLocationY;
-    var styleLocationX = StartStyleLocationX;
+    var styleLocationY = startStyleLocationY;
+    var styleLocationX = startStyleLocationX;
     styleLocationY = mapPinMain.style.top;
     var mainLocationY = parseInt(styleLocationY, 10);
     styleLocationX = mapPinMain.style.left;
@@ -41,10 +43,10 @@
 
   var reset = function () {
     formResetButton.addEventListener('click', function () {
-      mapPinMain.style.top = StarStyleLocationY;
-      mapPinMain.style.left = StartStyleLocationX;
+      mapPinMain.style.top = startStyleLocationY;
+      mapPinMain.style.left = startStyleLocationX;
       formSubmit.reset();
-      window.pin.onRemoveCard();
+      window.pin.removeCard();
       window.map.disactivate();
       window.pin.removeOld();
     });
@@ -64,13 +66,13 @@
       guestNumberValue = guestNumber.options[guestOptionSelected].value;
       for (var i = 0; i < guestOptions.length; i++) {
         guestOptions[i].removeAttribute('disabled', true);
-        if (roomNumberValue !== '100') {
+        if (roomNumberValue !== MAX_ROOMS) {
           if (guestOptions[i].value > roomNumberValue) {
             guestOptions[i].setAttribute('disabled', true);
           }
         } else {
           guestOptions[i].setAttribute('disabled', true);
-          if (guestOptions[i].value === '50') {
+          if (guestOptions[i].value === NOT_FOR_GUEST_VALUE) {
             guestOptions[i].removeAttribute('disabled', true);
           }
         }
@@ -88,7 +90,7 @@
   };
 
   var validatingTitle = function () {
-    var titleInput = document.getElementById('title');
+    var titleInput = document.querySelector('#title');
     titleInput.addEventListener('invalid', function () {
       if (titleInput.validity.tooShort) {
         titleInput.setCustomValidity('Заголовок должно состоять минимум из 30-ти символов');
@@ -183,11 +185,11 @@
 
   var onSuccess = function () {
     map.appendChild(successMessage);
-    window.pin.onRemoveCard();
+    window.pin.removeCard();
     window.pin.removeOld();
     window.map.disactivate();
-    mapPinMain.style.top = StarStyleLocationY;
-    mapPinMain.style.left = StartStyleLocationX;
+    mapPinMain.style.top = startStyleLocationY;
+    mapPinMain.style.left = startStyleLocationX;
     formSubmit.reset();
     successMessage.addEventListener('click', onSuccessMessage);
     document.addEventListener('keydown', onEscSuccessMessage);
